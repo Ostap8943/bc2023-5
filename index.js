@@ -28,9 +28,14 @@ app.get("/notes", async (req, res) => {
         res.json(notes);
     } catch (err) {
         console.error(err);
-        res.status(500).send("Помилка сервера");
+        if (err.code === 'ENOENT') {
+            res.json([]);
+        } else {
+            res.status(500).send("Помилка сервера");
+        }
     }
 });
+
 
 app.get("/notes/:noteName", async (req, res) => {
     const noteName = req.params.noteName;
@@ -46,7 +51,11 @@ app.get("/notes/:noteName", async (req, res) => {
         }
     } catch (err) {
         console.error(err);
-        res.status(500).send("Помилка сервера");
+        if (err.code === 'ENOENT') {
+            res.json([]);
+        } else {
+            res.status(500).send("Помилка сервера");
+        }
     }
 });
 
