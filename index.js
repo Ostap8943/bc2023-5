@@ -70,7 +70,7 @@ app.post('/upload', upload.fields([{ name: 'note_name' }, { name: 'note' }]), as
         if (existingNote) {
             res.status(400).send("Нотатка з таким іменем вже існує. Використовуйте інше ім'я.");
         } else {
-            let noteText = req.body.note; // Assuming text is sent in the body
+            let noteText = req.body.note;
 
             if (req.files && req.files['note'] && req.files['note'][0]) {
                 noteText = req.files['note'][0].buffer.toString();
