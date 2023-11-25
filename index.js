@@ -61,7 +61,7 @@ app.get("/notes/:noteName", async (req, res) => {
 
 app.post('/upload', upload.fields([{ name: 'note_name' }, { name: 'note' }]), async (req, res) => {
     const noteName = req.body.note_name;
-    
+
     try {
         const notesData = await fs.readFile('notes.json', 'utf8');
         const notes = JSON.parse(notesData);
@@ -70,14 +70,15 @@ app.post('/upload', upload.fields([{ name: 'note_name' }, { name: 'note' }]), as
         if (existingNote) {
             res.status(400).send("Нотатка з таким іменем вже існує. Використовуйте інше ім'я.");
         } else {
+            let noteText = req.body.note; // Assuming text is sent in the body
+
             if (req.files && req.files['note'] && req.files['note'][0]) {
-                const noteText = req.files['note'][0].buffer.toString();
-                notes.push({ note_name: noteName, note_text: noteText });
-                await fs.writeFile('notes.json', JSON.stringify(notes));
-                res.status(201).send("Нотатка успішно завантажена.");
-            } else {
-                res.status(400).send("Помилка завантаження нотатки. Переконайтеся, що ви вибрали файл.");
+                noteText = req.files['note'][0].buffer.toString();
             }
+
+            notes.push({ note_name: noteName, note_text: noteText });
+            await fs.writeFile('notes.json', JSON.stringify(notes));
+            res.status(201).send("Нотатка успішно завантажена.");
         }
     } catch (err) {
         console.error(err);
